@@ -190,6 +190,7 @@ class Subscription < ActiveRecord::Base
     # Check out http://letsfreckle.com/blog/2008/12/ecommerce-stuff/
     # Test charges need to be at least $1
     def test_card!
+      return unless gateway.respond_to?(:void)
       auth_response = gateway.authorize(100, card)
       gateway.void(auth_response.authorization) if auth_response.success?
       raise AuthorizationFailed.new(auth_response) unless auth_response.success?
